@@ -1,6 +1,3 @@
-/**
- *  \ingroup HistFactory 
- */
 
 // A set of utils for navegating HistFactory models
 #include <stdexcept>    
@@ -33,7 +30,7 @@ namespace HistFactory{
 
   RooAbsPdf* getSumPdfFromChannel( RooAbsPdf* sim_channel ) {
 
-    bool verbose=false;
+    bool verbose=true;
 
     if(verbose) std::cout << "Getting the RooRealSumPdf for the channel: " 
 			  << sim_channel->GetName() << std::endl;
@@ -92,7 +89,7 @@ namespace HistFactory{
          RooAbsCategoryLValue *cat = (RooAbsCategoryLValue *) sim->indexCat().Clone();
          for (int ic = 0, nc = cat->numBins((const char *)0); ic < nc; ++ic) {
             cat->setBin(ic);
-            FactorizeHistFactoryPdf(observables, *sim->getPdf(cat->getCurrentLabel()), obsTerms, constraints);
+            FactorizeHistFactoryPdf(observables, *sim->getPdf(cat->getLabel()), obsTerms, constraints);
          }
          delete cat;
       } else if (pdf.dependsOn(observables)) {
@@ -251,16 +248,18 @@ namespace HistFactory{
 
     // loop over channels
     RooCategory* channelCat = (RooCategory*) (&simPdf->indexCat());
-    for (const auto& nameIdx : *channelCat) {
+    TIterator* iter = channelCat->typeIterator() ;
+    RooCatType* tt = NULL;
+    while((tt=(RooCatType*) iter->Next())) {
 
       // Get pdf associated with state from simpdf
-      RooAbsPdf* pdftmp = simPdf->getPdf(nameIdx.first.c_str());
+      RooAbsPdf* pdftmp = simPdf->getPdf(tt->GetName()) ;
 
       std::string ChannelName = pdftmp->GetName(); //tt->GetName();
       if(verbose) std::cout << "Getting data for channel: " << ChannelName << std::endl;
       ChannelBinDataMap[ ChannelName ] = std::vector<double>();
 
-      RooAbsData* dataForChan = (RooAbsData*) dataByCategory->FindObject(nameIdx.first.c_str());
+      RooAbsData* dataForChan = (RooAbsData*) dataByCategory->FindObject(tt->GetName());
       if(verbose) dataForChan->Print();
 
       // Generate observables defined by the pdf associated with this state
@@ -280,16 +279,32 @@ namespace HistFactory{
       // double nu = expected * fracAtObsValue;
       
       // an easier way to get n
-      TH1* histForN = dataForChan->createHistogram("HhstForN",*obs);
+      /*TH1* histForN = dataForChan->createHistogram("HhstForN",*obs);
       for(int i=1; i<=histForN->GetNbinsX(); ++i){
-	double n = histForN->GetBinContent(i);
-	if(verbose) std::cout << "n" <<  i << " = " << n  << std::endl;
-	ChannelBinDataMap[ ChannelName ].push_back( n ); 
+	      double n = histForN->GetBinContent(i);
+	      if(verbose) std::cout << "n" <<  i << " = " << n  << std::endl;
+	      ChannelBinDataMap[ ChannelName ].push_back( n );
+      }*/
+      
+      // multidimensional way to get n
+      std::cout << "DEBUG MESSAGE: USING BRIAN'S PATCH" << std::endl;
+      std::cout << "DEBUG MESSAGE: LOOPING OVER "<< dataForChan->numEntries() << " BINS" << std::endl;
+      for(int i=0; i<dataForChan->numEntries(); i++)
+      {
+        const RooArgSet* tmpargs=dataForChan->get(i);
+        //tmpargs->Print("V"); 
+        double n = dataForChan->weight();
+        if(verbose) std::cout << "n" << i << " = " << n << std::endl;
+        ChannelBinDataMap[ ChannelName ].push_back( n );
+        //std::cout << '\n' << std::endl;
       }
-      delete histForN;
+      std::cout << "DEBUG MESSAGE: DONE!" << std::endl;
+      
+      //delete histForN;
     
     } // End Loop Over Categories
     
+    delete iter;
     return;
 
   }
