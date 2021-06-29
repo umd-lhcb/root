@@ -30,7 +30,7 @@ namespace HistFactory{
 
   RooAbsPdf* getSumPdfFromChannel( RooAbsPdf* sim_channel ) {
 
-    bool verbose=false;
+    bool verbose=true;
 
     if(verbose) std::cout << "Getting the RooRealSumPdf for the channel: " 
 			  << sim_channel->GetName() << std::endl;
@@ -279,13 +279,28 @@ namespace HistFactory{
       // double nu = expected * fracAtObsValue;
       
       // an easier way to get n
-      TH1* histForN = dataForChan->createHistogram("HhstForN",*obs);
+      /*TH1* histForN = dataForChan->createHistogram("HhstForN",*obs);
       for(int i=1; i<=histForN->GetNbinsX(); ++i){
-	double n = histForN->GetBinContent(i);
-	if(verbose) std::cout << "n" <<  i << " = " << n  << std::endl;
-	ChannelBinDataMap[ ChannelName ].push_back( n ); 
+	      double n = histForN->GetBinContent(i);
+	      if(verbose) std::cout << "n" <<  i << " = " << n  << std::endl;
+	      ChannelBinDataMap[ ChannelName ].push_back( n );
+      }*/
+      
+      // multidimensional way to get n
+      std::cout << "DEBUG MESSAGE: USING BRIAN'S PATCH" << std::endl;
+      std::cout << "DEBUG MESSAGE: LOOPING OVER "<< dataForChan->numEntries() << " BINS" << std::endl;
+      for(int i=0; i<dataForChan->numEntries(); i++)
+      {
+        const RooArgSet* tmpargs=dataForChan->get(i);
+        //tmpargs->Print("V"); 
+        double n = dataForChan->weight();
+        if(verbose) std::cout << "n" << i << " = " << n << std::endl;
+        ChannelBinDataMap[ ChannelName ].push_back( n );
+        //std::cout << '\n' << std::endl;
       }
-      delete histForN;
+      std::cout << "DEBUG MESSAGE: DONE!" << std::endl;
+      
+      //delete histForN;
     
     } // End Loop Over Categories
     

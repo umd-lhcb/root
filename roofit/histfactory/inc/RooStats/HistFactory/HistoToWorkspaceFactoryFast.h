@@ -48,6 +48,10 @@ namespace RooStats{
       HistoToWorkspaceFactoryFast(  RooStats::HistFactory::Measurement& Meas );
       virtual ~HistoToWorkspaceFactoryFast();
 
+        void AddEfficiencyTerms(RooWorkspace* proto, std::string prefix, std::string interpName,
+                                std::vector<OverallSys>& systList,
+                                std::vector<std::string>& constraintTermNames, std::vector<std::string>& totSystTermNames);
+        
       static void ConfigureWorkspaceForMeasurement( const std::string& ModelName, 
 						    RooWorkspace* ws_single, 
 						    Measurement& measurement );

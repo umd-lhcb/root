@@ -42,12 +42,15 @@ public:
 		    tau(NULL), nom_pois_mean(NULL),
 		    sumPdf(NULL),  nData(-1) {}
     bool hasStatUncert;
+    bool onlyStatUncert;
     RooRealVar* gamma;
     RooArgSet* observables;
     RooArgSet* bin_center; // Snapshot
     RooRealVar* tau;
     RooAbsReal* nom_pois_mean;
     RooAbsReal* sumPdf;
+    RooAbsReal* sumPdf0;
+    RooAbsReal* sumPdf1;
     double nData;
     double binVolume;
     void SetBinCenter() const;
@@ -106,6 +109,8 @@ protected:
   RooAbsData* _data;
   mutable std::map< std::string, std::vector< BarlowCache > > _barlowCache;
   mutable std::set< std::string > _statUncertParams;
+  //mutable std::map< std::string, std::vector< double > > _nu_b_vec;
+  //mutable std::map< std::string, std::vector< double > >_nu_b_stat_vec;
   // Bool_t _startFromMin ; // Always start minimization for global minimum?
 
   /*
