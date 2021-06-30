@@ -47,28 +47,43 @@ ClassImp(RooStats::HistFactory::HistFactorySimultaneous)
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 						 RooAbsCategoryLValue& inIndexCat) : 
-  RooSimultaneous(name, title, inIndexCat ) {}
+  RooSimultaneous(name, title, inIndexCat )
+  {
+    this->_clientList.setHashTableSize(12007);
+  }
 
 
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 const RooArgList& inPdfList, RooAbsCategoryLValue& inIndexCat) :
-  RooSimultaneous(name, title, inPdfList, inIndexCat) {}
+  RooSimultaneous(name, title, inPdfList, inIndexCat) 
+  {
+    this->_clientList.setHashTableSize(12007);
+  }
 
 
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 map<string,RooAbsPdf*> pdfMap, RooAbsCategoryLValue& inIndexCat) :
-  RooSimultaneous(name, title, pdfMap, inIndexCat) {}
+  RooSimultaneous(name, title, pdfMap, inIndexCat) 
+  {
+    this->_clientList.setHashTableSize(12007);
+  }
 
 
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const HistFactorySimultaneous& other, const char* name) : 
-  RooSimultaneous(other, name) {}
+  RooSimultaneous(other, name) 
+  {
+    this->_clientList.setHashTableSize(12007);
+  }
 
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const RooSimultaneous& other, const char* name) : 
-  RooSimultaneous(other, name) {}
+  RooSimultaneous(other, name)
+  {
+    this->_clientList.setHashTableSize(12007);
+  }
 
 //_____________________________________________________________________________
 RooStats::HistFactory::HistFactorySimultaneous::~HistFactorySimultaneous() 
@@ -117,6 +132,7 @@ RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData
 
   // Create a standard nll
   RooNLLVar* nll = (RooNLLVar*) RooSimultaneous::createNLL( data, cmdList );
+  nll->enableOffsetting(kTRUE);
 
   RooBarlowBeestonLL* bbnll = new RooBarlowBeestonLL("bbnll", "bbnll", *nll); //, *observables);
   bbnll->setPdf( this );

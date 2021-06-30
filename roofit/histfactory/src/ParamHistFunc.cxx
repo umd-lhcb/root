@@ -97,7 +97,8 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   _dataVars("!dataVars","data Vars",       this),
   _paramSet("!paramSet","bin parameters",  this),
   _numBins(0),
-  _dataSet( (std::string(name)+"_dataSet").c_str(), "", vars)
+  _dataSet( (std::string(name)+"_dataSet").c_str(), "", vars),
+  _prefix("")
 {
   
   // Create a function which returns binewise-values
@@ -128,6 +129,7 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   // Add the parameters (with checking)
   addVarSet( vars );
   addParamSet( paramSet );
+     _paramSet.setHashTableSize(12007);
 
   
 }
@@ -142,7 +144,8 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   _dataVars("!dataVars","data Vars",       this),
   _paramSet("!paramSet","bin parameters",  this),
   _numBins(0),
-  _dataSet( (std::string(name)+"_dataSet").c_str(), "", vars, Hist)
+  _dataSet( (std::string(name)+"_dataSet").c_str(), "", vars, Hist),
+  _prefix("")
 {
 
   // Create a function which returns binewise-values
@@ -163,6 +166,7 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   // Add the parameters (with checking)
   addVarSet( vars );
   addParamSet( paramSet );
+     _paramSet.setHashTableSize(12007);
  
 }
 
@@ -203,9 +207,19 @@ ParamHistFunc::ParamHistFunc(const ParamHistFunc& other, const char* name) :
   _paramSet("!paramSet", this, other._paramSet),
   _numBins( other._numBins ),
   _binMap( other._binMap ),
-  _dataSet( other._dataSet )
+  _nameCache( other._nameCache ),
+  _dataSet( other._dataSet ),
+  _prefix(other._prefix )
 {
+     _paramSet.setHashTableSize(12007);
   ;
+  
+  RooFIter varIter = _dataVars.fwdIterator() ;
+  RooAbsReal* comp;
+  while((comp=(RooAbsReal*)varIter.next()))
+  {
+    addServer(*comp);
+  }
   // Copy constructor
   // Member _ownedList is intentionally not copy-constructed -- ownership is not transferred
 }
@@ -245,16 +259,26 @@ RooRealVar& ParamHistFunc::getParameter( Int_t index ) const {
   // internally in the '_paramSet' vector
 
   Int_t gammaIndex = -1;
-  if( _binMap.find( index ) != _binMap.end() ) {
-    gammaIndex = _binMap[ index ];
+  if(_nameCache[index]!="")
+  {
+    return *((RooRealVar*)_paramSet.find(_nameCache[index].c_str()));
   }
-  else {
-    std::cout << "Error: ParamHistFunc internal bin index map "
-	      << "not properly configured" << std::endl;
-    throw -1;
-  }
+  else
+  {
+    if( _binMap.find( index ) != _binMap.end() ) {
+      gammaIndex = _binMap[ index ];
+    }
+    else {
+       std::cout << "Error: ParamHistFunc internal bin index map "
+  	      << "not properly configured" << std::endl;
+      throw -1;
+    }
 
-  return (RooRealVar&) _paramSet[gammaIndex];
+    RooAbsArg *temp;
+    temp = &(_paramSet[gammaIndex]);
+    _nameCache[index]=temp->GetName();
+    return *((RooRealVar*)temp);
+  }
 }
 
 
@@ -275,6 +299,10 @@ void ParamHistFunc::setConstant( bool constant ) {
   for( int i=0; i < numBins(); ++i) {
     setParamConst(i, constant);
   }
+}
+
+void ParamHistFunc::setPrefix(const char* name) {
+  _prefix=name;
 }
 
 
@@ -563,6 +591,7 @@ Int_t ParamHistFunc::addVarSet( const RooArgList& vars ) {
     }
 
     _dataVars.add( *comp );
+    addServer(*comp);
     numVars++;
 
   }
@@ -609,6 +638,7 @@ Int_t ParamHistFunc::addVarSet( const RooArgList& vars ) {
 	Int_t TH1HistBin    = i + j*numBinsX + k*numBinsX*numBinsY; 
 	  
 	_binMap[RooDataSetBin] = TH1HistBin;
+        _nameCache.push_back("");
 	
       }
     }
@@ -660,6 +690,7 @@ Int_t ParamHistFunc::addParamSet( const RooArgList& params ) {
     _paramSet.add( *comp );
 
   }
+  _paramSet.setHashTableSize(12007);
   
   return 0;
 
@@ -672,8 +703,29 @@ Double_t ParamHistFunc::evaluate() const
 
   // Find the bin cooresponding to the current
   // value of the RooRealVar:
+  
 
-  RooRealVar* param = (RooRealVar*) &(getParameter());
+  RooRealVar* param;
+  //this was a candidate speedup to guess the var name. but it turns out to not
+  //be all that much faster
+  /*
+  if((_prefix!="") && (_dataVars.getSize()==3))
+   {
+      int i=((RooRealVar*)_dataVars.at(0))->getBin();
+      int j=((RooRealVar*)_dataVars.at(1))->getBin();
+      int k=((RooRealVar*)_dataVars.at(2))->getBin();
+	    char VarNameStream[64];
+	    sprintf(VarNameStream, "%s_bin_%d_%d_%d",_prefix.c_str(),i,j,k);
+      param = ((RooRealVar*)_paramSet.find(VarNameStream));
+      return param->getVal();
+   }
+   else
+   {
+     std::cerr << "Problem: _prefix was " << _prefix << endl;
+   }
+   */
+   
+  param = (RooRealVar*) &(getParameter());
   Double_t value = param->getVal();
   return value;
   
@@ -734,7 +786,6 @@ Double_t ParamHistFunc::analyticalIntegralWN(Int_t /*code*/, const RooArgSet* /*
     // Get the gamma's value
     Double_t paramVal  = (*param).getVal();
     
-    // Get the bin volume
     _dataSet.get( nominalItr );
     Double_t binVolumeDS  = _dataSet.binVolume(); //_binning->binWidth( nominalItr );
     
