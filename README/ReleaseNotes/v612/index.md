@@ -80,7 +80,7 @@ type of object, the transversal of THashList and THashTable containers will
 will have to be done without call Hash (and hence be linear rather than
 logarithmic complexity).  You will also see warnings like
 ```
-   Error in <ROOT::Internal::TCheckHashRecurveRemoveConsistency::CheckRecursiveRemove>: The class SomeName overrides TObject::Hash but does not call TROOT::RecursiveRemove in its destructor.
+   Error in <ROOT::Internal::TCheckHashRecursiveRemoveConsistency::CheckRecursiveRemove>: The class SomeName overrides TObject::Hash but does not call TROOT::RecursiveRemove in its destructor.
 ```
 - When a container relies on TObject::Hash and RecursiveRemove, for example THashTable, the container uses ```TObject::CheckedHash()``` instead of ```TObject::Hash``` during insertion operation to record in the object whether the Hash/RecursiveRemove setup is done properly (as explain above).  It this is not the case ```TObject::HasInconsistentHash()``` will return true.  This can then be used to select, in RecursiveRemove, whether the call to Hash can be trusted or if one needs to do a linear search (as was done in v6.10 and earlier).
 - In TClass::GetMissingDictionaries activate the search through the base classes.
@@ -625,8 +625,30 @@ be removed; please migrate to the CMake-based build system.
 * [ROOT-8980] - variadic template warning in genreflex prohibits use in CMS build system
 * [ROOT-9125] - Making TEnv::GetValue and Lookup const
 
+## Release 6.12/06
+
+Released on February 9, 2018
+
+### Core Libraries
+
+* Remove issue leading to TClass of unexpected type being 'Unloaded'.
+* Reduce drastically the number of obj alloc in TCheckHashRecurveRemoveConsistency.
+
+### Bugs and Issues fixed in this release
+
+* [ROOT-9116] - TDF: bad interaction between multi-thread execution and separate output TFile
+* [ROOT-9147] - rootcling crashes when compiling ROOT with C++17 and GCC 7.2.0
+* [ROOT-9154] - root crashes when trying to start opengl viewer
+* [ROOT-9158] - EVE is broken for 6.12
+* [ROOT-9196] - [Jenkins] MakeProject file names too long
+* [ROOT-9199] - TDF: improper handling of branches with leaflists
+* [ROOT-9201] - Bad placement of x-axis title when drawing histogram
+* [ROOT-9232] - [TDF] Entry loss when using Range and multiple actions
+* [ROOT-9233] - Simple rootmap file can not be read by ROOT
+* [ROOT-9237] - [Jenkins] roottest_python_JupyROOT_cppcompleter_doctest fails on 32bit
+* [ROOT-9238] - [pyROOT] Crash when value-printing empty TFile
 
 
 ## HEAD of the v6-12-00-patches branch
 
-These changes will be part of the future 6.12/04
+These changes will be part of the future 6.12/08

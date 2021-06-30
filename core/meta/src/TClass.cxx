@@ -62,7 +62,7 @@ a 'using namespace std;' has been applied to and with:
 #include "TProtoClass.h"
 #include "TROOT.h"
 #include "TRealData.h"
-#include "TCheckHashRecurveRemoveConsistency.h" // Private header
+#include "TCheckHashRecursiveRemoveConsistency.h" // Private header
 #include "TStreamer.h"
 #include "TStreamerElement.h"
 #include "TVirtualStreamerInfo.h"
@@ -2917,7 +2917,7 @@ TClass *TClass::GetClass(const char *name, Bool_t load, Bool_t silent)
       //    if (cl->GetState() == kInterpreter) return cl
       //
       // In this case, if a ROOT dictionary was available when the TClass
-      // was first request it would have been used and if a ROOT dictionary is
+      // was first requested it would have been used and if a ROOT dictionary is
       // loaded later on TClassTable::Add will take care of updating the TClass.
       // So as far as ROOT dictionary are concerned, if the current TClass is
       // in interpreted state, we are sure there is nothing to load.
@@ -2925,7 +2925,7 @@ TClass *TClass::GetClass(const char *name, Bool_t load, Bool_t silent)
       // However (see TROOT::LoadClass), the TClass can also be loaded/provided
       // by a user provided TClassGenerator.  We have no way of knowing whether
       // those do (or even can) behave the same way as the ROOT dictionary and
-      // have the 'dictionary is now available for use' step informa the existing
+      // have the 'dictionary is now available for use' step informs the existing
       // TClass that their dictionary is now available.
 
       //we may pass here in case of a dummy class created by TVirtualStreamerInfo
@@ -5875,7 +5875,7 @@ void TClass::SetRuntimeProperties()
 
    UChar_t properties = static_cast<UChar_t>(ERuntimeProperties::kSet);
 
-   if (ROOT::Internal::TCheckHashRecurveRemoveConsistency::Check(*this))
+   if (ROOT::Internal::TCheckHashRecursiveRemoveConsistency::Check(*this))
       properties |= static_cast<UChar_t>(ERuntimeProperties::kConsistentHash);
 
    const_cast<TClass *>(this)->fRuntimeProperties = properties;
@@ -6989,9 +6989,10 @@ Bool_t ROOT::Internal::HasConsistentHashMember(const char *cname)
    // cross-checked in testHashRecursiveRemove.cxx
    static const char *handVerified[] = {
       "TEnvRec",    "TDataType",      "TObjArray",    "TList",   "THashList",
-      "TClass",     "TCling",         "TInterpreter", "TMethod", "ROOT::Internal::TCheckHashRecurveRemoveConsistency",
+      "TClass",     "TCling",         "TInterpreter", "TMethod", "ROOT::Internal::TCheckHashRecursiveRemoveConsistency",
       "TCheckHashRecurveRemoveConsistency", "TGWindow",
-      "TDirectory", "TDirectoryFile", "TObject",      "TH1"};
+      "TDirectory", "TDirectoryFile", "TObject",      "TH1",
+      "TQClass" };
 
    if (cname && cname[0]) {
       for (auto cursor : handVerified) {

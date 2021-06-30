@@ -278,10 +278,12 @@ public:
       }
    }
 
+   /// This overload is used to return scalar quantities (i.e. types that are not read into a TArrayBranch)
    template <typename U = T,
              typename std::enable_if<std::is_same<typename TColumnValue<U>::ProxyParam_t, U>::value, int>::type = 0>
    T &Get(Long64_t entry);
 
+   /// This overload is used to return arrays (i.e. types that are read into a TArrayBranch)
    template <typename U = T, typename std::enable_if<!std::is_same<ProxyParam_t, U>::value, int>::type = 0>
    TArrayBranch<ProxyParam_t> Get(Long64_t)
    {
@@ -748,9 +750,9 @@ public:
    /// Ranges act as filters when it comes to selecting entries that downstream nodes should process
    bool CheckFilters(unsigned int slot, Long64_t entry) final
    {
-      if (fHasStopped) {
-         return false;
-      } else if (entry != fLastCheckedEntry) {
+      if (entry != fLastCheckedEntry) {
+         if (fHasStopped)
+            return false;
          if (!fPrevData.CheckFilters(slot, entry)) {
             // a filter upstream returned false, cache the result
             fLastResult = false;

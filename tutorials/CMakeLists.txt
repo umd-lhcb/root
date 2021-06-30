@@ -56,7 +56,8 @@ if(NOT ROOT_minuit2_FOUND)
                    fit/minuit2FitBench.C fit/minuit2GausFit.C
                    fit/minuit2GausFit.C fit/NumericalMinimization.C
                    fit/combinedFit.C fit/TestBinomial.C
-                   fit/fitNormSum.C fit/vectorizedFit.C)
+                   fit/fitNormSum.C fit/vectorizedFit.C
+                   tutorials/roostats/rs_bernsteinCorrection.C)
 endif()
 
 if(NOT ROOT_roofit_FOUND)
@@ -167,6 +168,9 @@ else()
   if("$ENV{PYTHIA8}" STREQUAL "")
     get_filename_component(pythia8dir "${PYTHIA8_INCLUDE_DIR}" DIRECTORY)
     list(APPEND ROOT_environ PYTHIA8=${pythia8dir})
+  endif()
+  if("$ENV{PYTHIA8DATA}" STREQUAL "" AND PYTHIA8_DATA)
+    list(APPEND ROOT_environ PYTHIA8DATA=${PYTHIA8_DATA})
   endif()
 endif()
 
