@@ -467,6 +467,7 @@ RooArgList ParamHistFunc::createParamSet(RooWorkspace& w, const std::string& Pre
     std::cout << " Error: ParamHistFunc doesn't support dimensions > 3D " <<  std::endl;
   }
 
+  paramSet.useHashMapForFind(true);
   return paramSet;  
 
 }
@@ -507,6 +508,7 @@ RooArgList ParamHistFunc::createParamSet(RooWorkspace& w, const std::string& Pre
     var->setMax( gamma_max );
   }
 
+  params.useHashMapForFind(true);
   return params;
 
 }
@@ -561,6 +563,7 @@ RooArgList ParamHistFunc::createParamSet(const std::string& Prefix, Int_t numBin
 
   }
 
+  paramSet.useHashMapForFind(true);
   return paramSet;
 
 }

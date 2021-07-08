@@ -62,7 +62,7 @@ ClassImp(RooStats::HistFactory::RooBarlowBeestonLL)
 //  _par("nuisanceParam","Nuisance parameters",this,kFALSE,kFALSE),
   _pdf(NULL), _data(NULL)
 { 
-  //    this->_clientList.setHashTableSize(12007);
+  // this->_clientList.setHashTableSize(12007);
   // Default constructor 
   // Should only be used by proof. 
   //  _piter = _par.createIterator() ; 
@@ -431,9 +431,10 @@ RooArgSet* RooStats::HistFactory::RooBarlowBeestonLL::getParameters(const RooArg
     // If there is a gamma in the name,
     // strip it from the list of dependencies
 
-    if( _statUncertParams.find(arg_name.c_str()) != _statUncertParams.end() ) {
-      allArgs->remove( *arg, kTRUE );
-    }
+    allArgs->remove(*(allArgs->selectByName("*gamma_stat*")),kTRUE,kTRUE);
+    // if( _statUncertParams.find(arg_name.c_str()) != _statUncertParams.end() ) {
+    //   allArgs->remove( *arg, kTRUE );
+    // }
 
   }
 
