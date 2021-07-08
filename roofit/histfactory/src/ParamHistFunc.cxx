@@ -129,7 +129,7 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   // Add the parameters (with checking)
   addVarSet( vars );
   addParamSet( paramSet );
-     _paramSet.setHashTableSize(12007);
+     _paramSet.useHashMapForFind(true);
 
   
 }
@@ -166,7 +166,7 @@ ParamHistFunc::ParamHistFunc(const char* name, const char* title,
   // Add the parameters (with checking)
   addVarSet( vars );
   addParamSet( paramSet );
-     _paramSet.setHashTableSize(12007);
+     _paramSet.useHashMapForFind(true);
  
 }
 
@@ -211,7 +211,7 @@ ParamHistFunc::ParamHistFunc(const ParamHistFunc& other, const char* name) :
   _dataSet( other._dataSet ),
   _prefix(other._prefix )
 {
-     _paramSet.setHashTableSize(12007);
+     _paramSet.useHashMapForFind(true);
   ;
   
   RooFIter varIter = _dataVars.fwdIterator() ;
@@ -693,7 +693,7 @@ Int_t ParamHistFunc::addParamSet( const RooArgList& params ) {
     _paramSet.add( *comp );
 
   }
-  _paramSet.setHashTableSize(12007);
+  _paramSet.useHashMapForFind(true);
   
   return 0;
 
