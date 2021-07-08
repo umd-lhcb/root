@@ -24,7 +24,7 @@
 #include "RooObjCacheManager.h"
 
 class RooRealVar;
-class RooArgList ;
+class RooArgList;
 
 class PiecewiseInterpolation : public RooAbsSelfCachedReal {
 public:

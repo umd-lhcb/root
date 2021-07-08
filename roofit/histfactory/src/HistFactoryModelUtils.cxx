@@ -287,7 +287,7 @@ namespace HistFactory{
       }*/
       
       // multidimensional way to get n
-      std::cout << "DEBUG MESSAGE: USING BRIAN'S PATCH" << std::endl;
+      std::cout << "DEBUG MESSAGE: USING PHOEBE'S PATCH" << std::endl;
       std::cout << "DEBUG MESSAGE: LOOPING OVER "<< dataForChan->numEntries() << " BINS" << std::endl;
       for(int i=0; i<dataForChan->numEntries(); i++)
       {

@@ -40,11 +40,10 @@
 
 using namespace std ;
 
-ClassImp(RooStats::HistFactory::HistFactorySimultaneous)
-;
+ClassImp(RooStats::HistFactory::HistFactorySimultaneous);
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 						 RooAbsCategoryLValue& inIndexCat) : 
   RooSimultaneous(name, title, inIndexCat )
@@ -53,7 +52,7 @@ RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const ch
   }
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 const RooArgList& inPdfList, RooAbsCategoryLValue& inIndexCat) :
   RooSimultaneous(name, title, inPdfList, inIndexCat) 
@@ -62,7 +61,7 @@ RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const ch
   }
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 map<string,RooAbsPdf*> pdfMap, RooAbsCategoryLValue& inIndexCat) :
   RooSimultaneous(name, title, pdfMap, inIndexCat) 
@@ -71,28 +70,28 @@ RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const ch
   }
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const HistFactorySimultaneous& other, const char* name) : 
   RooSimultaneous(other, name) 
   {
     //    this->_clientList.setHashTableSize(12007);
   }
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const RooSimultaneous& other, const char* name) : 
   RooSimultaneous(other, name)
   {
     //    this->_clientList.setHashTableSize(12007);
   }
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooStats::HistFactory::HistFactorySimultaneous::~HistFactorySimultaneous() 
 {
   // Destructor
 }
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData& data, 
 					       const RooCmdArg& arg1, const RooCmdArg& arg2, 
 					       const RooCmdArg& arg3, const RooCmdArg& arg4, 
@@ -111,7 +110,7 @@ RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData
 }
 
 
-//_____________________________________________________________________________
+///////////////////////////////////////////////////////////////////////////////
 
 RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData& data, const RooLinkedList& cmdList) {
   
