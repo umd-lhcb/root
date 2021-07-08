@@ -430,9 +430,10 @@ bool RooStats::HistFactory::RooBarlowBeestonLL::getParameters(const RooArgSet* d
     // If there is a gamma in the name,
     // strip it from the list of dependencies
 
-    if( _statUncertParams.find(arg->GetName()) != _statUncertParams.end() ) {
-      outputSet.remove( *arg, true );
-    }
+    //if( _statUncertParams.find(arg->GetName()) != _statUncertParams.end() ) {
+      //outputSet.remove( *arg, true );
+    //}
+    allArgs->remove(*(allArgs->selectByName("*gamma_stat*")), kTRUE, kTRUE);
 
   }
 
