@@ -13,6 +13,7 @@
 #define ROO_PARAMHISTFUNC
 
 #include <map>
+
 #include "RooAbsReal.h"
 #include "RooRealProxy.h"
 #include "RooListProxy.h"
@@ -91,7 +92,6 @@ protected:
   //RooRealProxy _dataVar;       // The RooRealVar
   RooListProxy _dataVars;       // The RooRealVars
   RooListProxy _paramSet ;            // interpolation parameters
-  
   //RooAbsBinning* _binning;  // Holds the binning of the dataVar (at construction time)
 
   Int_t _numBins;

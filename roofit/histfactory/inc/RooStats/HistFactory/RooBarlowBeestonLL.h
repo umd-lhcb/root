@@ -109,8 +109,6 @@ protected:
   RooAbsData* _data;
   mutable std::map< std::string, std::vector< BarlowCache > > _barlowCache;
   mutable std::set< std::string > _statUncertParams;
-  //mutable std::map< std::string, std::vector< double > > _nu_b_vec;
-  //mutable std::map< std::string, std::vector< double > >_nu_b_stat_vec;
   // Bool_t _startFromMin ; // Always start minimization for global minimum?
 
   /*

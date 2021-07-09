@@ -48,7 +48,6 @@ public:
   Bool_t setBinIntegrator(RooArgSet& allVars) ;
 
   Int_t getAnalyticalIntegralWN(RooArgSet& allVars, RooArgSet& analVars, const RooArgSet* normSet,const char* rangeName=0) const ;
-  //Double_t analyticalIntegralWN(Int_t code, const RooArgSet* normSet, const char* rangeName=0) const ;
 
   void setPositiveDefinite(bool flag=true){_positiveDefinite=flag;}
 

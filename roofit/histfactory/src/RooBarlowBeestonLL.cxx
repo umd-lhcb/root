@@ -236,7 +236,6 @@ void RooStats::HistFactory::RooBarlowBeestonLL::initializeBarlowCache() {
 
       RooRealSumPdf* base_sum_pdf = (RooRealSumPdf*)getSumPdfFromChannel( channelPdf );
 
-      
       if( base_sum_pdf == NULL )  {
 	std::cout << "Failed to find RooRealSumPdf in channel " <<  channel_name
 		  << ", therefor skipping this channel for analytic uncertainty minimization"
@@ -244,8 +243,7 @@ void RooStats::HistFactory::RooBarlowBeestonLL::initializeBarlowCache() {
 	channel_has_stat_uncertainty=false;
 	break;
       }
-      
-      
+
       RooConstVar *zero = new RooConstVar("zero","zero",0.0);
       RooConstVar *one = new RooConstVar("one","one",1.0);
       RooCustomizer cust0(*((RooAbsArg*)base_sum_pdf),(channel_name+"cust0").c_str());
@@ -255,7 +253,7 @@ void RooStats::HistFactory::RooBarlowBeestonLL::initializeBarlowCache() {
       cust1.replaceArg(*param_func,*one);
       RooAbsPdf* sum_pdf_1 = (RooAbsPdf*)cust1.build(kTRUE);
       this->addOwnedComponents(RooArgSet(*sum_pdf_1, *sum_pdf_0));
-      
+
       RooFIter sumIter(base_sum_pdf->funcList().fwdIterator());
       RooAbsArg *comp;
       int noStat=0;
@@ -263,7 +261,6 @@ void RooStats::HistFactory::RooBarlowBeestonLL::initializeBarlowCache() {
       {
         if(!(TString(comp->GetName()).Contains("StatUncert"))) noStat++;
       }
-      //base_sum_pdf->forceNumInt();
 
     for( Int_t bin_index = 0; bin_index < num_bins; ++bin_index ) {
 
@@ -313,7 +310,6 @@ void RooStats::HistFactory::RooBarlowBeestonLL::initializeBarlowCache() {
       cache.nom_pois_mean = pois_mean;
 
       // Get the RooRealSumPdf
-      //RooAbsPdf* sum_pdf = getSumPdfFromChannel( channelPdf );
       cache.sumPdf = base_sum_pdf;
       cache.sumPdf0 = sum_pdf_0;
       cache.sumPdf1 = sum_pdf_1;
@@ -399,7 +395,9 @@ bool RooStats::HistFactory::RooBarlowBeestonLL::getParameters(const RooArgSet* d
 
     // If there is a gamma in the name,
     // strip it from the list of dependencies
+
     outputSet.remove( *outputSet.selectByName("*gamma_stat*"), kTRUE, kTRUE );
+
   }
 
   return errorInBaseCall || false;

@@ -15,22 +15,22 @@
  *****************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////
-//
-// BEGIN_HTML
-// RooSimultaneous facilitates simultaneous fitting of multiple PDFs
-// to subsets of a given dataset.
-// <p>
-// The class takes an index category, which is interpreted as
-// the data subset indicator, and a list of PDFs, each associated
-// with a state of the index category. RooSimultaneous always returns
-// the value of the PDF that is associated with the current value
-// of the index category
-// <p>
-// Extended likelihood fitting is supported if all components support
-// extended likelihood mode. The expected number of events by a RooSimultaneous
-// is that of the component p.d.f. selected by the index category
-// END_HTML
-//
+/** \class RooStats::HistFactory::HistFactorySimultaneous
+ *  \ingroup HistFactory 
+ *  RooSimultaneous facilitates simultaneous fitting of multiple PDFs
+ *  to subsets of a given dataset.
+ *  
+ *  The class takes an index category, which is interpreted as
+ *  the data subset indicator, and a list of PDFs, each associated
+ *  with a state of the index category. RooSimultaneous always returns
+ *  the value of the PDF that is associated with the current value
+ *  of the index category
+ *  
+ *  Extended likelihood fitting is supported if all components support
+ *  extended likelihood mode. The expected number of events by a RooSimultaneous
+ *  is that of the component p.d.f. selected by the index category
+ *  
+ */
 
 
 #include "RooNLLVar.h"
@@ -41,63 +41,55 @@
 using namespace std ;
 
 ClassImp(RooStats::HistFactory::HistFactorySimultaneous);
+;
 
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 						 RooAbsCategoryLValue& inIndexCat) : 
-  RooSimultaneous(name, title, inIndexCat )
-  {
-    //    this->_clientList.setHashTableSize(12007);
-  }
+  RooSimultaneous(name, title, inIndexCat ) {}
 
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 const RooArgList& inPdfList, RooAbsCategoryLValue& inIndexCat) :
-  RooSimultaneous(name, title, inPdfList, inIndexCat) 
-  {
-    //    this->_clientList.setHashTableSize(12007);
-  }
+  RooSimultaneous(name, title, inPdfList, inIndexCat) {}
 
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const char *name, const char *title, 
 				 map<string,RooAbsPdf*> pdfMap, RooAbsCategoryLValue& inIndexCat) :
-  RooSimultaneous(name, title, pdfMap, inIndexCat) 
-  {
-    //    this->_clientList.setHashTableSize(12007);
-  }
+  RooSimultaneous(name, title, pdfMap, inIndexCat) {}
 
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const HistFactorySimultaneous& other, const char* name) : 
-  RooSimultaneous(other, name) 
-  {
-    //    this->_clientList.setHashTableSize(12007);
-  }
+  RooSimultaneous(other, name) {}
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooStats::HistFactory::HistFactorySimultaneous::HistFactorySimultaneous(const RooSimultaneous& other, const char* name) : 
-  RooSimultaneous(other, name)
-  {
-    //    this->_clientList.setHashTableSize(12007);
-  }
+  RooSimultaneous(other, name) {}
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// Destructor
+
 RooStats::HistFactory::HistFactorySimultaneous::~HistFactorySimultaneous() 
 {
-  // Destructor
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData& data, 
 					       const RooCmdArg& arg1, const RooCmdArg& arg2, 
 					       const RooCmdArg& arg3, const RooCmdArg& arg4, 
 					       const RooCmdArg& arg5, const RooCmdArg& arg6, 
 					       const RooCmdArg& arg7, const RooCmdArg& arg8) {
-  
   // Probably not necessary because createNLL is virtual...
 
   RooLinkedList l ;
@@ -110,7 +102,7 @@ RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
+//_____________________________________________________________________________
 
 RooAbsReal* RooStats::HistFactory::HistFactorySimultaneous::createNLL(RooAbsData& data, const RooLinkedList& cmdList) {
   
