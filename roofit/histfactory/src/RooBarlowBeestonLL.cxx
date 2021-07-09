@@ -391,14 +391,10 @@ bool RooStats::HistFactory::RooBarlowBeestonLL::getParameters(const RooArgSet* d
                                                               bool stripDisconnected) const {
   bool errorInBaseCall = RooAbsArg::getParameters( depList, outputSet, stripDisconnected );
 
-  for (auto const& arg : outputSet) {
-
     // If there is a gamma in the name,
     // strip it from the list of dependencies
 
-    outputSet.remove( *outputSet.selectByName("*gamma_stat*"), kTRUE, kTRUE );
-
-  }
+  outputSet.remove( *outputSet.selectByName("*gamma_stat*"), kTRUE, kTRUE );
 
   return errorInBaseCall || false;
 
