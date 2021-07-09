@@ -55,6 +55,7 @@ PiecewiseInterpolation::PiecewiseInterpolation()
 }
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 /// Construct a new interpolation. The value of the function will be
 /// \f[
@@ -172,11 +173,8 @@ PiecewiseInterpolation::~PiecewiseInterpolation()
 RooArgSet* PiecewiseInterpolation::actualObservables(const RooArgSet &nset) const
 {
   RooArgSet *myDeps = new RooArgSet;
-  TIterator* diter = _depList.createIterator();
-  diter->Reset();
-  RooAbsArg* dep;
-  while((dep=(RooAbsArg*)diter->Next()))
-  {
+  for (auto comp : _depList) {
+    auto dep = static_cast<RooAbsArg*>(comp);
     myDeps->add(*dep);
   }
   return myDeps;
@@ -186,14 +184,11 @@ RooArgSet* PiecewiseInterpolation::actualObservables(const RooArgSet &nset) cons
 RooArgSet* PiecewiseInterpolation::actualParameters(const RooArgSet &nset) const
 {
   RooArgSet *myPars=new RooArgSet;
-  TIterator* piter = _paramSet.createIterator();
-  piter->Reset();
-  RooAbsArg* par;
-  while((par=(RooAbsArg*)piter->Next()))
-  {
+  for (auto comp : _paramSet) {
+    auto par = static_cast<RooAbsArg*>(comp);
     myPars->add(*par);
   }
-  myPars->remove(nset,kTRUE,kTRUE);
+  myPars->remove(nset, kTRUE, kTRUE);
   return myPars;
 }
 
@@ -379,53 +374,38 @@ Double_t PiecewiseInterpolation::evaluate() const
   Double_t nominal = _nominal;
   Double_t sum(nominal) ;
 
-  RooAbsReal* param ;
-  RooAbsReal* high ;
-  RooAbsReal* low ;
-  int i=0;
-
-  RooFIter lowIter(_lowSet.fwdIterator()) ;
-  RooFIter highIter(_highSet.fwdIterator()) ;
-  RooFIter paramIter(_paramSet.fwdIterator()) ;
-
-  while((param=(RooAbsReal*)paramIter.next())) {
-    low = (RooAbsReal*)lowIter.next() ;
-    high = (RooAbsReal*)highIter.next() ;
-    Double_t highVal=high->getVal();
-    Double_t lowVal=low->getVal();
-    if ((lowVal==nominal))
-    {
-      if(highVal==nominal) continue;
-    }
-
+  for (unsigned int i=0; i < _paramSet.size(); ++i) {
+    auto param = static_cast<RooAbsReal*>(_paramSet.at(i));
+    auto low   = static_cast<RooAbsReal*>(_lowSet.at(i));
+    auto high  = static_cast<RooAbsReal*>(_highSet.at(i));
     Int_t icode = _interpCode[i] ;
 
     switch(icode) {
     case 0: {
       // piece-wise linear
       if(param->getVal()>0)
-	sum +=  param->getVal()*(highVal - nominal );
+	sum +=  param->getVal()*(high->getVal() - nominal );
       else
-	sum += param->getVal()*(nominal - lowVal);
+	sum += param->getVal()*(nominal - low->getVal());
       break ;
     }
     case 1: {
       // pice-wise log
       if(param->getVal()>=0)
-	sum *= pow(highVal/nominal, +param->getVal());
+	sum *= pow(high->getVal()/nominal, +param->getVal());
       else
-	sum *= pow(lowVal/nominal,  -param->getVal());
+	sum *= pow(low->getVal()/nominal,  -param->getVal());
       break ;
     }
     case 2: {
       // parabolic with linear
-      double a = 0.5*(highVal+lowVal)-nominal;
-      double b = 0.5*(highVal-lowVal);
+      double a = 0.5*(high->getVal()+low->getVal())-nominal;
+      double b = 0.5*(high->getVal()-low->getVal());
       double c = 0;
       if(param->getVal()>1 ){
-	sum += (2*a+b)*(param->getVal()-1)+highVal-nominal;
+	sum += (2*a+b)*(param->getVal()-1)+high->getVal()-nominal;
       } else if(param->getVal()<-1 ) {
-	sum += -1*(2*a-b)*(param->getVal()+1)+lowVal-nominal;
+	sum += -1*(2*a-b)*(param->getVal()+1)+low->getVal()-nominal;
       } else {
 	sum +=  a*pow(param->getVal(),2) + b*param->getVal()+c;
       }
@@ -433,13 +413,13 @@ Double_t PiecewiseInterpolation::evaluate() const
     }
     case 3: {
       //parabolic version of log-normal
-      double a = 0.5*(highVal+lowVal)-nominal;
-      double b = 0.5*(highVal-lowVal);
+      double a = 0.5*(high->getVal()+low->getVal())-nominal;
+      double b = 0.5*(high->getVal()-low->getVal());
       double c = 0;
       if(param->getVal()>1 ){
-	sum += (2*a+b)*(param->getVal()-1)+highVal-nominal;
+	sum += (2*a+b)*(param->getVal()-1)+high->getVal()-nominal;
       } else if(param->getVal()<-1 ) {
-	sum += -1*(2*a-b)*(param->getVal()+1)+lowVal-nominal;
+	sum += -1*(2*a-b)*(param->getVal()+1)+low->getVal()-nominal;
       } else {
 	sum +=  a*pow(param->getVal(),2) + b*param->getVal()+c;
       }
@@ -454,12 +434,12 @@ Double_t PiecewiseInterpolation::evaluate() const
 
       double x  = param->getVal();      
       if (x>1) {
-	sum += x*(highVal - nominal );
+	sum += x*(high->getVal() - nominal );
       } else if (x<-1) {
-	sum += x*(nominal - lowVal);
+	sum += x*(nominal - low->getVal());
       } else {
-	double eps_plus = highVal - nominal;
-	double eps_minus = nominal - lowVal;
+	double eps_plus = high->getVal() - nominal;
+	double eps_minus = nominal - low->getVal();
 	double S = 0.5 * (eps_plus + eps_minus);
 	double A = 0.0625 * (eps_plus - eps_minus);
 	
@@ -483,14 +463,14 @@ Double_t PiecewiseInterpolation::evaluate() const
       if (x > x0 || x < -x0)
       {
 	if(x>0)
-	  sum += x*(highVal - nominal );
+	  sum += x*(high->getVal() - nominal );
 	else
-	  sum += x*(nominal - lowVal);
+	  sum += x*(nominal - low->getVal());
       }
       else if (nominal != 0)
       {
-	double eps_plus = highVal - nominal;
-	double eps_minus = nominal - lowVal;
+	double eps_plus = high->getVal() - nominal;
+	double eps_minus = nominal - low->getVal();
 	double S = (eps_plus + eps_minus)/2;
 	double A = (eps_plus - eps_minus)/2;
 
@@ -515,7 +495,6 @@ Double_t PiecewiseInterpolation::evaluate() const
       break ;
     }
     }
-    ++i;
   }
   
   if(_positiveDefinite && (sum<0)){

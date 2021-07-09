@@ -201,11 +201,9 @@ ParamHistFunc::ParamHistFunc(const ParamHistFunc& other, const char* name) :
 {
   _paramSet.useHashMapForFind(true);
 
-  RooFIter varIter = _dataVars.fwdIterator();
-  RooAbsReal* comp;
-  while((comp=(RooAbsReal*)varIter.next()))
-  {
-    addServer(*comp);
+  for (auto comp : _dataVars) {
+    auto var = static_cast<RooRealVar*>(comp);
+    addServer(*var);
   }
   // Copy constructor
   // Member _ownedList is intentionally not copy-constructed -- ownership is not transferred
@@ -781,6 +779,30 @@ std::list<Double_t>* ParamHistFunc::plotSamplingHint(RooAbsRealLValue& obs, Doub
 						Double_t xhi) const
 {
   return 0;
+  // copied and edited from RooHistFunc
+  RooAbsLValue* lvarg = &obs;
+
+  // Retrieve position of all bin boundaries
+  const RooAbsBinning* binning = lvarg->getBinningPtr(0) ;
+  Double_t* boundaries = binning->array() ;
+
+  std::list<Double_t>* hint = new std::list<Double_t> ;
+
+  // Widen range slighty
+  xlo = xlo - 0.01*(xhi-xlo) ;
+  xhi = xhi + 0.01*(xhi-xlo) ;
+
+  Double_t delta = (xhi-xlo)*1e-8 ;
+ 
+  // Construct array with pairs of points positioned epsilon to the left and
+  // right of the bin boundaries
+  for (Int_t i=0 ; i<binning->numBoundaries() ; i++) {
+    if (boundaries[i]>=xlo && boundaries[i]<=xhi) {
+      hint->push_back(boundaries[i]-delta) ;
+      hint->push_back(boundaries[i]+delta) ;
+    }
+  }
+  return hint ;
 }
 
 
@@ -793,4 +815,22 @@ std::list<Double_t>* ParamHistFunc::binBoundaries(RooAbsRealLValue& obs, Double_
 						  Double_t xhi) const 
 {
   return 0;
+  // copied and edited from RooHistFunc
+  RooAbsLValue* lvarg = &obs;
+
+  // Retrieve position of all bin boundaries
+  const RooAbsBinning* binning = lvarg->getBinningPtr(0) ;
+  Double_t* boundaries = binning->array() ;
+
+  std::list<Double_t>* hint = new std::list<Double_t> ;
+
+  // Construct array with pairs of points positioned epsilon to the left and
+  // right of the bin boundaries
+  for (Int_t i=0 ; i<binning->numBoundaries() ; i++) {
+    if (boundaries[i]>=xlo && boundaries[i]<=xhi) {
+      hint->push_back(boundaries[i]) ;
+    }
+  }
+
+  return hint ;
 }
