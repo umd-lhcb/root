@@ -216,22 +216,23 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
     RooAbsReal* param ;
     RooHistFunc* high ;
     RooHistFunc* low ;
-    int i=0;
+    int i=-1;
 
     RooFIter lowIter(_lowSet.fwdIterator()) ;
     RooFIter highIter(_highSet.fwdIterator()) ;
     RooFIter paramIter(_paramSet.fwdIterator()) ;
 
     while((param=(RooAbsReal*)paramIter.next())) {
+      ++i;
       low = (RooHistFunc*)(lowIter.next()) ;
       high = (RooHistFunc*)(highIter.next()) ;
       low->dataHist().get(k);
       high->dataHist().get(k);
       Double_t highVal=high->dataHist().weight();
       Double_t lowVal=low->dataHist().weight();
-      if ((lowVal==nominal))
+      if ((lowVal==nominal)*(highVal==nominal))
       {
-        if(highVal==nominal) continue;
+        continue;
       }
 
       Int_t icode = _interpCode[i] ;
@@ -258,6 +259,17 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
         double a = 0.5*(highVal+lowVal)-nominal;
         double b = 0.5*(highVal-lowVal);
         double c = 0;
+        double x = param->getVal();
+        if(x*x <= 1)
+        {
+          sum += a*x*x+b+x;
+        }
+        else
+        {
+          int sgn = 1-2*std::signbit(x);
+          sum += (b+2*sgn*a)*x-a;
+        }
+        /* can I do this with no branch?
         if(param->getVal()>1 ){
     sum += (2*a+b)*(param->getVal()-1)+highVal-nominal;
         } else if(param->getVal()<-1 ) {
@@ -265,6 +277,7 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
         } else {
     sum +=  a*pow(param->getVal(),2) + b*param->getVal()+c;
         }
+        */
         break ;
       }
       case 3: {
@@ -347,7 +360,6 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
         break ;
       }
       }
-      ++i;
     }
 
     if(_positiveDefinite && (sum<0)){
