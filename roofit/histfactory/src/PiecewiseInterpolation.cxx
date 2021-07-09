@@ -646,6 +646,7 @@ Int_t PiecewiseInterpolation::getAnalyticalIntegralWN(RooArgSet& allVars, RooArg
 /// Implement analytical integrations by doing appropriate weighting from  component integrals
 /// functions to integrators of components
 
+#if 0
 Double_t PiecewiseInterpolation::analyticalIntegralWN(Int_t code, const RooArgSet* /*normSet2*/,const char* /*rangeName*/) const 
 {
   /*
@@ -825,6 +826,7 @@ Double_t PiecewiseInterpolation::analyticalIntegralWN(Int_t code, const RooArgSe
   //  cout << "value = " << value <<endl;
   return value;
 }
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////
