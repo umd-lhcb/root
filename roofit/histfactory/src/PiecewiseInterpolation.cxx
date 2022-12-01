@@ -212,13 +212,14 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
     RooAbsReal* param ;
     RooHistFunc* high ;
     RooHistFunc* low ;
-    int i=0;
+    int i=-1;
 
     RooFIter lowIter(_lowSet.fwdIterator()) ;
     RooFIter highIter(_highSet.fwdIterator()) ;
     RooFIter paramIter(_paramSet.fwdIterator()) ;
 
     while((param=(RooAbsReal*)paramIter.next())) {
+      ++i;
       low = (RooHistFunc*)(lowIter.next()) ;
       high = (RooHistFunc*)(highIter.next()) ;
       low->dataHist().get(k);
@@ -347,7 +348,6 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
         break ;
       }
       }
-      ++i;
     }
     
     if(_positiveDefinite && (sum<0)){
@@ -380,13 +380,14 @@ Double_t PiecewiseInterpolation::evaluate() const
   RooAbsReal* param ;
   RooAbsReal* high ;
   RooAbsReal* low ;
-  int i=0;
+  int i=-1;
 
   RooFIter lowIter(_lowSet.fwdIterator()) ;
   RooFIter highIter(_highSet.fwdIterator()) ;
   RooFIter paramIter(_paramSet.fwdIterator()) ;
 
   while((param=(RooAbsReal*)paramIter.next())) {
+    ++i;
     low = (RooAbsReal*)lowIter.next() ;
     high = (RooAbsReal*)highIter.next() ;
     Double_t highVal=high->getVal();
@@ -513,7 +514,6 @@ Double_t PiecewiseInterpolation::evaluate() const
       break ;
     }
     }
-    ++i;
   }
   
   if(_positiveDefinite && (sum<0)){
@@ -548,22 +548,6 @@ Bool_t PiecewiseInterpolation::setBinIntegrator(RooArgSet& allVars)
 }
 
 //_____________________________________________________________________________
-Int_t PiecewiseInterpolation::getAnalyticalIntegralWN(RooArgSet& allVars, RooArgSet& analVars, 
-						      const RooArgSet* normSet, const char* ) const 
-{
-  // Advertise that all integrals can be handled internally.
-
-
-
-  // Handle trivial no-integration scenario
-  if (allVars.getSize()==0) return 0 ;
-  if (_forceNumInt) return 0 ;
-
-
-  // Force using numeric integration
-  // use special numeric integrator  
-  return 0;
-}
   
 /*
   // KC: check if interCode=0 for all 
