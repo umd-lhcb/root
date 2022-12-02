@@ -22,6 +22,7 @@
 #include "RooListProxy.h"
 
 #include "RooObjCacheManager.h"
+#include <vector>
 
 class RooRealVar;
 class RooArgList ;
@@ -43,6 +44,7 @@ public:
   const RooArgList& lowList() const { return _lowSet ; }
   const RooArgList& highList() const { return _highSet ; }
   const RooArgList& paramList() const { return _paramSet ; }
+  const std::vector<int>& interpolationCodes() const { return _interpCode; }
 
   //virtual Bool_t forceAnalyticalInt(const RooAbsArg&) const { return kTRUE ; }
   Bool_t setBinIntegrator(RooArgSet& allVars) ;
