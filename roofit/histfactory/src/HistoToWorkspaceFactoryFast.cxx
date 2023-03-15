@@ -793,7 +793,7 @@ namespace HistFactory{
     tot.specialIntegratorConfig(kTRUE)->method1D().setLabel("RooBinIntegrator")  ;
     tot.specialIntegratorConfig(kTRUE)->method2D().setLabel("RooBinIntegrator")  ;
     tot.specialIntegratorConfig(kTRUE)->methodND().setLabel("RooBinIntegrator")  ;
-    tot.forceNumInt();
+    // tot.forceNumInt();
 
     // for mixed generation in RooSimultaneous
     tot.setAttribute("GenerateBinned"); // for use with RooSimultaneous::generate in mixed mode
