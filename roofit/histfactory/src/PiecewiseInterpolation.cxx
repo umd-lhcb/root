@@ -262,7 +262,7 @@ void PiecewiseInterpolation::fillCacheObject(RooAbsCachedReal::FuncCacheElem& ca
         double x = param->getVal();
         if(x*x <= 1)
         {
-          sum += a*x*x+b+x;
+          sum += a*x*x+b*x;
         }
         else
         {
