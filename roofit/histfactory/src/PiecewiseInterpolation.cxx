@@ -136,7 +136,7 @@ PiecewiseInterpolation::PiecewiseInterpolation(const char* name, const char* tit
   // Choose special integrator by default 
   specialIntegratorConfig(kTRUE)->method1D().setLabel("RooBinIntegrator") ;
   TRACE_CREATE
-  this->Print("V");
+  // this->Print("V");
 }
 
 
